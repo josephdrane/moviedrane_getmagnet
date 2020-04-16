@@ -1,14 +1,18 @@
-FROM python:3.7.5-slim
+# GCP Dockerfile Setup Guide : 
+# https://github.com/grpc-ecosystem/grpc-cloud-run-example/blob/master/python/README.md
 
-WORKDIR /usr/src/app
+FROM python:3.8
+
+WORKDIR /srv/grpc
 
 COPY . .
 
-RUN python3 -m pip install \
-        grpcio \
-        grpcio-tools
-        
-EXPOSE 8080
+RUN pip install -r requirements.txt && \
+    python -m grpc_tools.protoc \
+        -I. \
+        --python_out=. \
+        --grpc_python_out=. \
+        magnet.proto
 
-CMD ["python3", "server.py"]
+CMD ["python", "server.py"]
 
