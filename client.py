@@ -8,9 +8,10 @@ import magnet_pb2_grpc
 
 
 def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.secure_channel('grpc-moviedranegetmagnet-eub7v2b6nq-uw.a.run.app:443', grpc.ssl_channel_credentials()) as channel:
+    # with grpc.insecure_channel('https://grpc-moviedranegetmagnet-eub7v2b6nq-uw.a.run.app:443') as channel:
         stub = magnet_pb2_grpc.MagnetStub(channel)
-        request = MagnetRequest(imdb_id="SOME VALUE")
+        request = MagnetRequest(imdb_id="tt7146812")
         response = stub.GetMagnet(request)
         print(f"Received: {response.url}")
         print(f"Response Type is: {type(response)}")

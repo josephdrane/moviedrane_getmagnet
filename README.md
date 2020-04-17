@@ -18,7 +18,7 @@ https://cloud.google.com/container-registry/docs/pushing-and-pulling
 
 ```bash
 cd <project directory>
-export GCP_PROJECT=<your-gcp-project-id>
+export GCP_PROJECT=moviedrane-274422
 docker build -t gcr.io/$GCP_PROJECT/grpc-moviedrane_getmagnet:latest .
 ```
 
@@ -39,4 +39,21 @@ docker push gcr.io/$GCP_PROJECT/grpc-moviedrane_getmagnet:latest
 
 ```bash
 gcloud run deploy --image gcr.io/$GCP_PROJECT/grpc-moviedrane_getmagnet:latest --platform managed
+```
+
+5. Get Endpoint and Test
+
+```bash
+ENDPOINT=$(gcloud run services list \
+    --project=moviedrane-274422 \
+    --region=${GCP_REGION} \
+    --platform=managed \
+    --format="value(status.address.url)" \
+    --filter="metadata.name=grpc-moviedranegetmagnet")
+
+grpcurl \
+    -proto magnet.proto \
+    -d '{"imdb_id": "tt7146812" }' \
+    ${ENDPOINT}:443 \
+    Magnet.GetMagnet
 ```
